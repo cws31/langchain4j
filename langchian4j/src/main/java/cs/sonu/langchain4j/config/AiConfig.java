@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import cs.sonu.langchain4j.service.ChatAssistant;
+import dev.langchain4j.memory.chat.ChatMemoryProvider;
+import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
 // import dev.langchain4j.model.openai.OpenAiChatModel;
@@ -57,13 +59,21 @@ public class AiConfig {
     //             .build();
     // }
 
+    @Bean 
+    public  ChatMemoryProvider chatMemoryProvider(){
+        return  memoryId -> MessageWindowChatMemory.builder()
+                            .id(memoryId)
+                            .maxMessages(20)
+                            .build();
+    }
 
     @Bean
     public ChatAssistant chatAssistant(
-            @Qualifier("gemini") ChatModel chatModel) {
+            @Qualifier("gemini") ChatModel chatModel, ChatMemoryProvider chatMemoryProviders) {
 
         return AiServices.builder(ChatAssistant.class)
                 .chatModel(chatModel)
+                .chatMemoryProvider(chatMemoryProviders)
                 .build();
     }
 }

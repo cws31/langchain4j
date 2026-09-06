@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatRequest {
-
+    private  int id;
     private String message;
 
 }
